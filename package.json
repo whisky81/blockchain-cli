@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
-    "link-cli": "chmod +x './dist/index.js' && npm link"
+    "link-cli": "npm run build && chmod +x './dist/index.js' && npm link"
   },
   "keywords": [],
   "author": "",

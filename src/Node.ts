@@ -45,12 +45,14 @@ export type SelfUpdateEvent = {
 
 export type EntireChainProtocol = {
     type: 'entire-chain',
-    blocks: Block[]
+    blocks: Block[],
+    from: string
 }
 
-export type LatestChainProtocol = {
-    type: 'latest-chain',
-    block: Block
+export type LatestBlockProtocol = {
+    type: 'latest-block',
+    block: Block,
+    from: string
 }
 
 class Node {
@@ -125,7 +127,8 @@ class Node {
 
                 const temp: EntireChainProtocol = {
                     type: 'entire-chain',
-                    blocks: longerChain
+                    blocks: longerChain,
+                    from: connection.remotePeer.toString()
                 }
                 await updateProtocolsLog(this.protocolsLogFilePath, Date.now(), 'entire-chain', temp);
 
@@ -133,7 +136,10 @@ class Node {
 
                 await this.broadcastLatestBlock();
             } catch (e: any) {
-                console.error(e.message || `An error occurred in ${BLOCKCHAIN_ENTIRE_CHAIN_PROTOCOL}`);
+                const msg = e.message || `An error occurred in ${BLOCKCHAIN_ENTIRE_CHAIN_PROTOCOL}`;
+                if (msg !== 'Invalid Chain') {
+                    console.log(msg);
+                }
             }
         });
 
@@ -148,9 +154,10 @@ class Node {
                 const receivedBlock = Block.fromJSON(handledData);
                 const latestBlock = this.blockchain.latestBlock;
 
-                const temp: LatestChainProtocol = {
-                    type: 'latest-chain',
-                    block: receivedBlock
+                const temp: LatestBlockProtocol = {
+                    type: 'latest-block',
+                    block: receivedBlock,
+                    from: connection.remotePeer.toString()
                 }
 
                 await updateProtocolsLog(this.protocolsLogFilePath, Date.now(), 'latest-block', temp);
@@ -241,7 +248,6 @@ class Node {
             if (this.node == null) {
                 throw new Error('Not started');
             }
-            await this.broadcastLatestBlock();
             this.blockchain.mine(data);
             await this.broadcastLatestBlock();
 

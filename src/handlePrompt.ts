@@ -11,7 +11,7 @@ export const logRegex = /^.log.(event|protocol).(list|discovery|connect|disconne
 export function helpPrompt() {
     const commands = [
         ['.q', 'Quit'],
-        ['.profile', ''],
+        ['.profile', 'Show current node profile'],
         ['.start', 'Start the node'],
         ['.help', 'Show documentation'],
         ['.mine(<data: string>)', `⛏ Mine a block with 'data', ${chalk.cyanBright('eg. .mine(hi there)')}`],
@@ -21,8 +21,8 @@ export function helpPrompt() {
         ['.block.index.<index: number>', `Get a block by index, ${chalk.cyanBright('eg. .block.index.0 (genesis index)')}`],
         ['.block.hash.<hash: string>', `Get a block by hash, ${chalk.cyanBright('eg. .block.hash.000f84e45967b2714a025ff83c04ec655ed68719b641aa08842c426bc113c4f6 (genesis hash)')}`],
         ['.peers', 'Get the list of connected peers.'],
-        ['.log.event.<(list|discovery|connect|disconnect|self-update)>', ''],
-        ['.log.protocol.<(list|latest-block|entire-chain)>', '']
+        ['.log.event.<(list|discovery|connect|disconnect|self-update)>', `View event log entries of a specific event type, Note: ${chalk.cyanBright('.log.event.list')} shows all available event types`],
+        ['.log.protocol.<(list|latest-block|entire-chain)>', `View protocol log entries of a specific protocol type. Note: ${chalk.cyanBright('.log.protocol.list')} returns all available protocols.`]
     ];
 
     const padding = Math.max(...commands.map(([cmd]) => cmd.length)) + 4;
@@ -148,6 +148,7 @@ export async function logPrompt(node: Node, prompt: string) {
         } else if (eOrP === 'protocol') {
             if (type === 'list') {
                 const protocols = p2p.getProtocols();
+                console.log();
                 console.log(chalk.green('Use the string on the right to view protocol logs.'));
                 console.log(chalk.green("e.g. .log.protocol.latest-block"));
                 console.log();
