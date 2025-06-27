@@ -1,0 +1,4 @@
+dist
+node_modules
+logs/*-pes.log
+logs/*-ps.log 
