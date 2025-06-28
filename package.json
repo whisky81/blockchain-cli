@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc -w",
+    "dev": "node './dist/index.js'",
     "link-cli": "npm run build && chmod +x './dist/index.js' && npm link"
   },
   "keywords": [],

@@ -195,7 +195,7 @@ class Node {
                 this.node?.peerStore.patch(peer, {
                     multiaddrs: multiaddrs
                 });
-                await this.requestLatestBlock(conn.detail.id);
+                await this.sendLatestBlock(conn.detail.id);
 
                 await updatePeerEventsLog(this.peerEventsLogFilePath, Date.now(), 'discovery', data);
 
@@ -263,7 +263,7 @@ class Node {
                 throw new Error("Error: Not started");
             }
             for (const peer of await this.node.peerStore.all()) {
-                await this.requestLatestBlock(peer.id);
+                await this.sendLatestBlock(peer.id);
             }
         } catch (e: any) {
             console.error(e.message || "BROADCAST ERROR");
@@ -286,7 +286,7 @@ class Node {
         }
     }
 
-    async requestLatestBlock(id: PeerId) {
+    async sendLatestBlock(id: PeerId) {
         try {
             if (this.node == null) {
                 throw new Error("Error: Not started");
